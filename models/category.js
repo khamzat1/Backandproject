@@ -11,18 +11,19 @@ const categorySchema = new mongoose.Schema({
 });
 
 
-//  function validateCategory(category) {
-//      const schema = Joi.object().keys({
-//          name: Joi.string().min(3).required()
-//      });
+  function validateCategory(category) {
+      const schema = Joi.object().keys({
+          name: Joi.string().min(3).max(50).required()
+     });
 
-//      return Joi.validate(category, schema);
-//  }
+      return Joi.validate(category, schema);
+  }
 
+ 
 
 const Category = mongoose.model('Category', categorySchema);
 
 exports.Category = Category;
-// exports.validate = validateCategory;
+exports.validate = validateCategory;
 exports.categorySchema = categorySchema;     
 

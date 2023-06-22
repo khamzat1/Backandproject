@@ -2,7 +2,9 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth')
 const admin = require('../middleware/admin')
-const { Category,validate } = require('../models/category')
+const { Category,validate } = require('../models/category');
+const mongoose = require('mongoose');
+const routes = require('../startup/routes');
 
 
 router.get('/',async(req,res)=>{
@@ -34,17 +36,18 @@ router.post('/',auth,async(req,res)=>{
 })
 
 router.get('/:id',async(req,res)=>{
-    const token = req.header('x-auth-token')
-    if(!token)
-    return req.status(401).send('Token bulmagan sababmurojaat rad etildi')
-
+    // const token = req.header('x-auth-token')
+    // if(!token)
+    // return req.status(401).send('Token bulmagan sababmurojaat rad etildi')
+    if(!mongoose.Types.ObjectId.isValid(req.params.id))
+        return res.status(404).send('Yaroqsiz aydi')
     let category = await Category.findById(req.params.id);
     if(!category)
-        return res.status(400).send('Berilgan IDteng bulgan toifa topilmadi');
+        return res.status(404).send('Berilgan IDteng bulgan toifa topilmadi');
 
     res.send(category);
 });
-
+ 
 router.put('/:id',auth,async (req,res) => {
     const token = req.header('x-auth-token')
     if(!token)
@@ -76,4 +79,4 @@ router.delete('/:id',[auth,admin],async (req,res)=>{
 
 
 
-module.exports = router;
+module.exports = router
